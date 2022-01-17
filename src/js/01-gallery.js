@@ -7,23 +7,23 @@
 // * Разбей его на несколько подзадач:
 
 // * 1. Создание и рендер разметки по массиву данных galleryItems и предоставленному
-// * 	шаблону элемента галереи.
+// * 	  шаблону элемента галереи.
 
 // * 2. Реализация делегирования на div.gallery и получение url большого изображения.
 
 // * 3.	Подключение скрипта и стилей библиотеки модального окна basicLightbox.
-// * 	https://basiclightbox.electerious.com/
-// * 	Используй CDN сервис jsdelivr https://www.jsdelivr.com/package/npm/basiclightbox?path=dist
+// * 	  https://basiclightbox.electerious.com/
+// * 	  Используй CDN сервис jsdelivr https://www.jsdelivr.com/package/npm/basiclightbox?path=dist
 // *    и добавь в проект ссылки на минифицированные(.min)
-// * 	файлы библиотеки.
+// * 	  файлы библиотеки.
 
 // * 4. Открытие модального окна по клику на элементе галереи.Для этого ознакомься с
-// * 	документацией https://github.com/electerious/basicLightbox#readme
-// *	и примерами. https://basiclightbox.electerious.com/
+// * 	  документацией https://github.com/electerious/basicLightbox#readme
+// *	  и примерами. https://basiclightbox.electerious.com/
 
 // * 5. Замена значения атрибута src элемента < img > в модальном окне перед открытием.
-// * 	Используй готовую разметку модального окна с изображением из примеров библиотеки
-// * 	basicLightbox. https://basiclightbox.electerious.com/
+// *  	Используй готовую разметку модального окна с изображением из примеров библиотеки
+// * 	  basicLightbox. https://basiclightbox.electerious.com/
 
 // ! Разметка элемента галереи
 // * Ссылка на оригинальное изображение должна храниться в data - атрибуте source на
@@ -57,4 +57,49 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-console.log(galleryItems);
+const parentDivEl = document.querySelector(".gallery");
+
+const gallery = galleryItems.reduce(
+  (markupItem, { preview, original, description }) => {
+    return (
+      markupItem +
+      `<a class="gallery__link" href="${original}">
+      <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+      />
+      </a>`
+    );
+  },
+  ""
+);
+
+parentDivEl.insertAdjacentHTML("beforeend", gallery);
+
+parentDivEl.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const originalImages = e.target.dataset.source;
+
+  const instance = basicLightbox.create(
+    `
+  <img src="${originalImages}">
+  `
+  );
+
+  instance.show();
+
+  const visible = basicLightbox.visible();
+
+  if (visible) {
+    document.addEventListener("keydown", (event) => {
+      const key = event.key;
+
+      if (key === "Escape") {
+        instance.close();
+      }
+    });
+  }
+});
