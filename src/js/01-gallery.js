@@ -55,14 +55,13 @@
 // * basicLightbox есть метод для программного закрытия модального окна.
 
 import { galleryItems } from "./gallery-items.js";
-// Change code below this line
 
 const parentDivEl = document.querySelector(".gallery");
 
 const gallery = galleryItems.reduce(
-  (markupItem, { preview, original, description }) => {
+  (itemMarkup, { preview, original, description }) => {
     return (
-      markupItem +
+      itemMarkup +
       `<a class="gallery__link" href="${original}">
       <img
       class="gallery__image"
@@ -82,13 +81,11 @@ parentDivEl.addEventListener("click", (e) => {
   e.preventDefault();
 
   const originalImages = e.target.dataset.source;
-
   const instance = basicLightbox.create(
     `
   <img src="${originalImages}">
   `
   );
-
   instance.show();
 
   const visible = basicLightbox.visible();
