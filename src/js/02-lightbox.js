@@ -36,7 +36,6 @@
 // * 	миллисекунд после открытия изображения.
 
 import { galleryItems } from "./gallery-items.js";
-// Change code below this line
 
 const parentDivEl = document.querySelector(".gallery");
 
@@ -55,7 +54,6 @@ const gallery = galleryItems.reduce(
   },
   ""
 );
-
 parentDivEl.insertAdjacentHTML("beforeend", gallery);
 
 const lightbox = new SimpleLightbox(".gallery a", {
