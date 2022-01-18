@@ -38,4 +38,32 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-console.log(galleryItems);
+const parentDivEl = document.querySelector(".gallery");
+
+const gallery = galleryItems.reduce(
+  (itemMarkup, { preview, original, description }) => {
+    return (
+      itemMarkup +
+      `<a class="gallery__link" href="${original}">
+      <img
+      class="gallery__image"
+      src="${preview}"
+      alt="${description}"
+      />
+      </a>`
+    );
+  },
+  ""
+);
+
+parentDivEl.insertAdjacentHTML("beforeend", gallery);
+
+const lightbox = new SimpleLightbox(".gallery a", {
+  showCounter: false,
+  captions: true,
+  captionDelay: 250,
+  captionSelector: "img",
+  captionType: "attr",
+  captionsData: "alt",
+  captionPosition: "bottom",
+});
