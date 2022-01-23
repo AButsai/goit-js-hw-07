@@ -1,7 +1,55 @@
+import { galleryItems } from "./gallery-items.js";
+
+const parentDivEl = document.querySelector(".gallery");
+
+const gallery = galleryItems
+  .map(({ preview, original, description }) => {
+    return `<a class="gallery__link" href="${original}">
+      <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+      />
+      </a>`;
+  })
+  .join("");
+
+parentDivEl.insertAdjacentHTML("beforeend", gallery);
+
+parentDivEl.addEventListener("click", onImgClick);
+
+const instance = basicLightbox.create(`<img class="gallery__image">`, {
+  onShow: () => {
+    window.addEventListener("keydown", onEscClick);
+  },
+
+  onClose: () => {
+    window.removeEventListener("keydown", onEscClick);
+  },
+});
+
+function onImgClick(evt) {
+  evt.preventDefault();
+  if (evt.target.nodeName !== "IMG") {
+    return;
+  }
+  instance.element().querySelector(".gallery__image").src =
+    evt.target.dataset.source;
+
+  instance.show();
+}
+
+function onEscClick(evt) {
+  if (evt.key === "Escape") {
+    instance.close();
+    return;
+  }
+}
+
 // ! Задание 1 - галерея изображений
 // * Создай галерею с возможностью клика по её элементам и просмотра полноразмерного
 // * изображения в модальном окне.Посмотри демо видео работы галереи.
-// * https://user-images.githubusercontent.com/17479434/127711719-4e293f5b-fbaa-4851-8671-fc841963d961.mp4
 
 // * Выполняй это задание в файлах 01 - gallery.html и 01 - gallery.js.
 // * Разбей его на несколько подзадач:
@@ -53,50 +101,3 @@
 // * Добавь закрытие модального окна по нажатию клавиши Escape. Сделай так, чтобы
 // * прослушивание клавиатуры было только пока открыто модальное окно. У библиотеки
 // * basicLightbox есть метод для программного закрытия модального окна.
-
-import { galleryItems } from "./gallery-items.js";
-
-const parentDivEl = document.querySelector(".gallery");
-
-const gallery = galleryItems.reduce(
-  (itemMarkup, { preview, original, description }) => {
-    return (
-      itemMarkup +
-      `<a class="gallery__link" href="${original}">
-      <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-      />
-      </a>`
-    );
-  },
-  ""
-);
-
-parentDivEl.insertAdjacentHTML("beforeend", gallery);
-
-parentDivEl.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  const originalImages = e.target.dataset.source;
-  const instance = basicLightbox.create(
-    `
-  <img src="${originalImages}">
-  `
-  );
-  instance.show();
-
-  const visible = basicLightbox.visible();
-
-  if (visible) {
-    document.addEventListener("keydown", (event) => {
-      const key = event.key;
-
-      if (key === "Escape") {
-        instance.close();
-      }
-    });
-  }
-});

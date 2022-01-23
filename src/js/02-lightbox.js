@@ -39,24 +39,21 @@ import { galleryItems } from "./gallery-items.js";
 
 const parentDivEl = document.querySelector(".gallery");
 
-const gallery = galleryItems.reduce(
-  (itemMarkup, { preview, original, description }) => {
-    return (
-      itemMarkup +
-      `<a class="gallery__link" href="${original}">
+const gallery = galleryItems
+  .map(({ preview, original, description }) => {
+    return `<a class="gallery__link" href="${original}">
       <img
       class="gallery__image"
       src="${preview}"
       alt="${description}"
       />
-      </a>`
-    );
-  },
-  ""
-);
+      </a>`;
+  })
+  .join("");
+
 parentDivEl.insertAdjacentHTML("beforeend", gallery);
 
-const lightbox = new SimpleLightbox(".gallery a", {
+new SimpleLightbox(".gallery a", {
   showCounter: false,
   captions: true,
   captionDelay: 250,
